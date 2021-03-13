@@ -1,0 +1,8 @@
+*vscode*
+__pycache__
+.env
+venv
+db.sqlite3
+**.swp
+**sqlite
+cache.db.sqlite
