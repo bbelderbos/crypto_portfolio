@@ -314,6 +314,17 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
+name = "pycoingecko"
+version = "1.4.0"
+description = "Python wrapper around the CoinGecko API"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "pycparser"
 version = "2.20"
 description = "C parser in Python"
@@ -619,7 +630,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "0b690f34bac296d073baec34be331bc7cb324ec0fd0501451c67c9e4446418bd"
+content-hash = "836681f589601f56f60083caad97ba69efece2d5ba2ecab68b7b2f96b346ed5a"
 
 [metadata.files]
 asgiref = [
@@ -954,6 +965,10 @@ psycopg2-binary = [
 py = [
     {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
     {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
+]
+pycoingecko = [
+    {file = "pycoingecko-1.4.0-py3-none-any.whl", hash = "sha256:bc6e2d87a59bda88bd01a241b37d49c30104842534fdf65ba96616c90419d756"},
+    {file = "pycoingecko-1.4.0.tar.gz", hash = "sha256:082949e83b49ab89090d19b88b6177c9458679dc4a98323db950bd4cef7afa2e"},
 ]
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},
