@@ -19,8 +19,8 @@ def scrape_coin_logos():
             ('div', class_='coin-icon mr-2 center flex-column')][:25]
 
 
-def parse_time(time):
-    return str(parse(time)).split('.')[0]
+def format_money(item):
+    return '$' + '{:,}'.format(item)
 
 
 def homepage(request):
@@ -29,8 +29,8 @@ def homepage(request):
     logos = scrape_coin_logos()
 
     for idx, item in enumerate(coin_data.get_coins_markets('usd')[:TOP_COINS]):
-        coin = Coin(rank=idx+1, logo=logos[idx], name=item['id'].title(), price='$'+str(item['current_price']),
-                market_cap='$'+'{:,}'.format(item['market_cap']), volume='$'+'{:,}'.format(item['total_volume']),
-                change='$'+'{:,}'.format(item['price_change_24h']), percent_change=item['price_change_percentage_24h'])
+        coin = Coin(rank=idx+1, logo=logos[idx], name=item['id'].title(), price=format_money(item['current_price']),
+                market_cap=format_money(item['market_cap']), volume=format_money(item['total_volume']),
+                change=format_money(item['price_change_24h']), percent_change=item['price_change_percentage_24h'])
         top_coins.append(coin)
     return render(request, 'home.html', {'top_coins': top_coins})

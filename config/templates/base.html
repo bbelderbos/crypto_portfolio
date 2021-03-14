@@ -6,6 +6,12 @@
   <title>{% block head_title %}{% endblock %}</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+    }
+  </style>
   {% block extra_head %}
   {% endblock %}
 </head>
@@ -34,10 +40,10 @@
             Links
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Home</a>
+            <a class="dropdown-item" href="{% url 'home' %}">Home</a>
             <a class="dropdown-item" href="#">My Portfolio</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Sign Out</a>
+            <a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a>
           </div>
         </li>
       </ul>
@@ -48,10 +54,10 @@
             Links
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Home</a>
-            <a class="dropdown-item" href="#">Login</a>
+            <a class="dropdown-item" href="{% url 'home' %}">Home</a>
+            <a class="dropdown-item" href="{% url 'account_login' %}">Login</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Sign Up</a>
+            <a class="dropdown-item" href="{% url 'account_signup' %}">Sign Up</a>
           </div>
         </li>
       </ul>
@@ -64,14 +70,12 @@
   </nav>
 
   {% if messages %}
-  <div>
-    <strong>Messages:</strong>
-    <ul>
       {% for message in messages %}
-      <li>{{message}}</li>
+      <div class="alert alert-success alert-dismissable fade show" role="alert">
+        <span class="lead">{{message}}</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+      </div>
       {% endfor %}
-    </ul>
-  </div>
   {% endif %}
 
   <!-- <div>
