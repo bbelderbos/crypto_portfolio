@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    {% block content %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-3 mx-auto">
+                    <h1 class="display-4">Welcome to CoinHub!</h1>
+                    <p class="lead">Your source for cryptocurrency data.</p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="container border-bottom border-dark">
+            <div class="row">
+                <div class="col-1">
+                    <span><strong>Logo</strong></span>
+                </div>
+                <div class="col-2">
+                    <span><strong>Name</strong></span>
+                </div>
+                <div class="col-2">
+                    <span><strong>Price</strong></span>
+                </div>
+                <div class="col-2">
+                    <span><strong>Market Cap</strong></span>
+                </div>
+                <div class="col-2">
+                    <span><strong>Volume</strong></span>
+                </div>
+                <div class="col-2">
+                    <span><strong>24h Change</strong></span>
+                </div>
+                <div class="col-1">
+                    <span><strong>24h % Change</strong></span>
+                </div>
+            </div>
+        </div>
+        {% for coin in top_coins%}
+        <div class="container">
+            <div class="row">
+                <div class="col-1">
+                    <span><strong>{{coin.rank}}</strong>&nbsp;&nbsp;<img src="{{coin.logo}}" alt="Image Not Found" class="img-fluid"></span>
+                </div>
+                <div class="col-2">
+                    <span>{{coin.name}}</span>
+                </div>
+                <div class="col-2">
+                    <span>{{coin.price}}</span>
+                </div>
+                <div class="col-2">
+                    <span>{{coin.market_cap}}</span>
+                </div>
+                <div class="col-2">
+                    <span>{{coin.volume}}</span>
+                </div>
+                <div class="col-2">
+                    <span>{{coin.change}}</span>
+                </div>
+                <div class="col-1">
+                    <span>{{coin.percent_change}}%</span>
+                </div>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+    {% endblock %}
+</body>
+</html>
