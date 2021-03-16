@@ -66,8 +66,8 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'crawler/templates'),
-                 os.path.join(BASE_DIR, 'crawler/templates/allauth')],
+        'DIRS': [os.path.join(BASE_DIR, 'config/templates'),
+                 os.path.join(BASE_DIR, 'config/templates/allauth')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
