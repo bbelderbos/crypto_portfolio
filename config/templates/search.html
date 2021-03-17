@@ -12,18 +12,32 @@
     {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-xs-9">
+            <div class="col-8 border-right border-primary">
                 <div style="height: 310px; margin-bottom: 10px;">{{chart|safe}}</div>
             </div>
-            <div class="col-xs-3 border-left border-primary">
+            <div class="col-4">
                 <div class="row">
-                    <div class="col-xs-12">
-                        <div style="height: 285px; margin-bottom: 10px; width: 400px;">Some text here</div>
+                    <div class="col-12 border border-primary">
+                        <div style="height: 285px; margin-bottom: 10px; width: 350px;">
+                            <h1 class="display-5"><img src="{{data.image}}" alt="Logo" class="img-fluid">&nbsp;{{data.id}}
+                            &nbsp;{{data.symbol}}</h1>
+                            <span class="badge badge-pill badge-primary">Rank #{{data.market_cap_rank}}</span> &nbsp;
+                            <span><button class="btn btn-outline-primary"><a href="{{data.link1}}">Homepage</a></button></span> &nbsp;
+                            <span><button class="btn btn-outline-primary"><a href="{{data.link2}}">Block Explorer</a></button></span>
+                            <p class="lead">Price: {{data.price}} &nbsp; All Time High: {{data.ath}}</p>
+                            <p class="lead">Market Cap: {{data.mcap}}</p>
+                            <p class="lead">Volume: {{data.volume}}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12">
-                        <div style="height: 285px; margin-bottom: 10px; width: 400px;">More text here</div>
+                    <div class="col-12 border border-primary">
+                        <div style="height: 285px; margin-bottom: 10px; width: 350px;">
+                            <h4 class="display-6"><strong>Exchange</strong> &nbsp; &nbsp; &nbsp;<strong>Volume (USDT)</strong></h4>
+                            {% for exchange in exchanges %}
+                            <p class="lead text-justify">{{exchange.name}} &nbsp; &nbsp; &nbsp; {{exchange.volume}}</p>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>

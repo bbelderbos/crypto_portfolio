@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from bs4 import BeautifulSoup as Soup
 import requests
 
-from portfolio.utils import get_coin_data, chart_data
+from portfolio.utils import get_coin_data, chart_data, single_coin_data, single_coin_exchanges
 
 
 def homepage(request):
@@ -20,8 +20,11 @@ def homepage(request):
 
 @csrf_exempt
 def searchpage(request):
+    cg = CoinGeckoAPI()
     if request.method == 'POST':
         coin = request.POST['coin'].lower()
         chart = chart_data(coin)
-        return render(request, 'search.html', {'chart': chart})
+        data = single_coin_data(coin)
+        exchanges = single_coin_exchanges(coin)
+        return render(request, 'search.html', {'chart': chart, 'data': data, 'exchanges': exchanges})
     return render(request, 'search.html')
