@@ -38,15 +38,13 @@ def convert_unix_to_date(timestamp):
     return str(datetime.fromtimestamp(timestamp))
 
 
-def get_coin_data():
+def get_coin_data(logos = scrape_coin_logos()):
     coin_data = CoinGeckoAPI()
     top_coins = []
-    logos = scrape_coin_logos()
-
-    for idx, item in enumerate(coin_data.get_coins_markets('usd')[:TOP_COINS]):
-        coin = Coin(rank=idx+1, logo=logos[idx], name=item['id'].title(), price=format_money(item['current_price']),
-                market_cap=format_money(item['market_cap']), volume=format_money(item['total_volume']),
-                change=format_money(item['price_change_24h']), percent_change=item['price_change_percentage_24h'])
+    for idx, item in enumerate(coin_data.get_coins_markets('usd')[:TOP_COINS], start=1):
+        coin = Coin(rank=idx, logo=logos[idx-1], name=item['id'].title(), price=item['current_price'],
+                market_cap=item['market_cap'], volume=item['total_volume'],
+                change=item['price_change_24h'], percent_change=item['price_change_percentage_24h'])
         top_coins.append(coin)
     return top_coins
 
@@ -63,9 +61,9 @@ def single_coin_data(coin):
     market_cap_rank = data['market_cap_rank']
     price_data = cg.get_coins_markets('usd')[market_cap_rank-1]
     ath = '$' + str(data['market_data']['ath']['usd'])
-    price = format_money(price_data['current_price'])
-    mcap = format_money(price_data['market_cap'])
-    volume = format_money(price_data['total_volume'])
+    price = price_data['current_price']
+    mcap = price_data['market_cap']
+    volume = price_data['total_volume']
     return SingleCoin(id=id, symbol=symbol, link1=link1, link2=link2, image=image,
                       market_cap_rank=market_cap_rank, ath=ath, price=price, mcap=mcap, volume=volume)
 
@@ -78,7 +76,7 @@ def single_coin_exchanges(coin):
     names = [name['market']['name'] for name in data if name['target'] == 'USDT']
     volumes = [round(vol['volume'], 2) for vol in data if vol['target'] == 'USDT']
     for i in range(5):
-        exchange = Exchanges(name=names[i], volume=format_money(volumes[i]))
+        exchange = Exchanges(name=names[i], volume=volumes[i])
         exchange_info.append(exchange)
     return exchange_info
 
