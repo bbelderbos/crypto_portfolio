@@ -5,4 +5,7 @@ register = template.Library()
 
 @register.filter
 def format_money(item):
-    return '$' + '{:,}'.format(item)
+    try:
+        return '$' + '{:,}'.format(item)
+    except ValueError:
+        return item
