@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+</head>
+
+<body>
+    {% block content %}
+    {% if request.method == 'POST' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-8 border-right border-primary">
+                <div style="height: 310px; margin-bottom: 10px;">{{chart|safe}}</div>
+            </div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-12 border border-primary">
+                        <div style="height: 285px; margin-bottom: 10px; width: 350px;">
+                            <h1 class="display-5"><img src="{{data.image}}" alt="Logo"
+                                    class="img-fluid">&nbsp;{{data.id}}
+                                &nbsp;{{data.symbol}}</h1>
+                            <span class="badge badge-pill badge-primary">Rank #{{data.market_cap_rank}}</span> &nbsp;
+                            <span><button class="btn btn-outline-primary"><a
+                                        href="{{data.link1}}">Homepage</a></button></span> &nbsp;
+                            <span><button class="btn btn-outline-primary"><a href="{{data.link2}}">Block
+                                        Explorer</a></button></span>
+                            <p class="lead">Price: {{data.price|format_money}} &nbsp; All Time High: {{data.ath|format_money}}</p>
+                            <p class="lead">Market Cap: {{data.mcap|format_money}}</p>
+                            <p class="lead">Volume: {{data.volume|format_money}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 border border-primary">
+                        <div style="height: 285px; margin-bottom: 10px; width: 350px;">
+                            <h4 class="display-6"><strong>Exchange</strong> &nbsp; &nbsp; &nbsp;<strong>Volume
+                                    (USDT)</strong></h4>
+                            {% for exchange in exchanges %}
+                            <p class="lead text-justify">{{exchange.name}} &nbsp; &nbsp; &nbsp; {{exchange.volume|format_money}}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div style="height: 310px; margin-bottom: 10px;">
+                    <h1 class="display-3">Please enter a search term in the search field above.</h1>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div style="height: 285px; margin-bottom: 10px; width: 350px;">
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock %}
+</body>
+
+</html>
