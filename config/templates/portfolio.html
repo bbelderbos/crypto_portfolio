@@ -23,7 +23,7 @@
             </div>
             <div class="col-xl-5 border rounded">
                 <p class="lead">Enter your purchases or sells.</p>
-                <form action="{% url 'portfolio' %}" method="POST">
+                <form action="#" method="POST">
                     {% csrf_token %}
                     {{form|crispy}}
                     <button class="btn btn-block btn-primary" type="submit">Submit</button>
