@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import PortfolioHoldings
 
-# Register your models here.
+models = [PortfolioHoldings]
+admin.site.register(models)
