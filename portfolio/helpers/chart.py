@@ -49,12 +49,12 @@ def chart_data(coin, currency='usd', days=1):
     return data
 
 
-def portfolio_pie_chart():
+def portfolio_pie_chart(data, labels):
     pie_chart = StringIO()
     plt.figure(figsize=(6,4))
-    plt.pie([2, 7, 4, 3, 9], labels=['ICX', 'BTC', 'ETH', 'NEO', 'LINK'], autopct='%.2f', shadow=True)
+    plt.pie(data, labels=labels, autopct='%.2f', shadow=True)
     plt.legend(title='Coin Names', loc='upper right',
-            bbox_to_anchor=(.8,0,0.5,.5))
+            bbox_to_anchor=(.95,0,0.5,.5))
     plt.savefig(pie_chart, format='svg')
     pie_chart.seek(0)
     chart = pie_chart.getvalue()

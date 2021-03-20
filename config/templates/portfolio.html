@@ -11,18 +11,18 @@
 </head>
 <body>
     {% block content %}
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-xl-12 border rounded border-primary bg-primary">
                 <h1>Here I am. It's getting hot outside how are you doing today bla bla bla</h1>
             </div>
         </div>
         <div class="row">
-            <div class="col-xl-7 border rounded">
+            <div class="col-xl-6 border rounded">
                 {{pie|safe}}
             </div>
-            <div class="col-xl-5 border rounded">
-                <p class="lead">Enter your purchases or sells.</p>
+            <div class="col-xl-6 border rounded">
+                <p class="lead"><strong>Enter your purchases or sells.</strong></p>
                 <form action="#" method="POST">
                     {% csrf_token %}
                     {{form|crispy}}
