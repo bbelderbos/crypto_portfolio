@@ -1,4 +1,5 @@
 from collections import namedtuple
+from portfolio.models import PortfolioHoldings
 
 from pycoingecko import CoinGeckoAPI
 
@@ -51,3 +52,15 @@ class CoinData:
             exchange = Exchanges(name=names[i], volume=volumes[i])
             exchange_info.append(exchange)
         return exchange_info
+
+
+    def portfolio_coins(self, user):
+        coin_list = []
+        userCoins = namedtuple('userCoins', 'ticker amount usd image')
+        user_coins = PortfolioHoldings.objects.filter(person=user)
+        for coin in user_coins.iterator():
+            image = self.single_coin_data(coin.coin_name).image
+            coin = userCoins(ticker=coin.coin_ticker, amount=coin.number_of_coins, 
+                   usd=coin.amount_in_usd, image=image)
+            coin_list.append(coin)
+        return coin_list
