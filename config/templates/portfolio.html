@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,17 +12,22 @@
 </head>
 <body>
     {% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-12 border rounded border-primary bg-primary">
-                <h1>Here I am. It's getting hot outside how are you doing today bla bla bla</h1>
+    <div class="container-fluid border-bottom border-dark">
+        <div class="row border-bottom border-dark">
+            {% for coin in info %}
+            <div class="col-xl-3">
+                <!-- <span><img src="{{coin.image}}" alt="coin logo"></span> -->
+                <p><img src="{{coin.image}}" alt="coin logo"><strong>&nbsp;{{coin.ticker}}</strong></p>
+                <p>Amount: &nbsp; {{coin.amount}}</p>
+                <p>Value: &nbsp; {{coin.usd|format_money}}</p>
             </div>
+            {% endfor %}
         </div>
         <div class="row">
-            <div class="col-xl-6 border rounded">
+            <div class="col-xl-6 border-right border-dark">
                 {{pie|safe}}
             </div>
-            <div class="col-xl-6 border rounded">
+            <div class="col-xl-6">
                 <p class="lead"><strong>Enter your purchases or sells.</strong></p>
                 <form action="#" method="POST">
                     {% csrf_token %}

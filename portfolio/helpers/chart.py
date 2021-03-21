@@ -32,7 +32,6 @@ def chart_data(coin, currency='usd', days=1):
         time = int(str(time)[0:10])
         time = convert_unix_to_date(time).split()[1]
         prices[time] = round(price, 2)
-        print(prices[time])
 
     df = pd.DataFrame.from_dict({k:v for k, v in prices.items()}, orient='index', columns=['Price'])
     plot = df['Price'].plot(label=f'{coin.title()} Price in USD', figsize=(8,6), title=f'{coin.title()} Chart for Past 24 Hours')
@@ -45,7 +44,7 @@ def chart_data(coin, currency='usd', days=1):
     plt.savefig(imgdata, format='svg')
     imgdata.seek(0)
     data = imgdata.getvalue()
-    plt.cla()
+    plt.close()
     return data
 
 
@@ -58,5 +57,5 @@ def portfolio_pie_chart(data, labels):
     plt.savefig(pie_chart, format='svg')
     pie_chart.seek(0)
     chart = pie_chart.getvalue()
-    plt.cla()
+    plt.close()
     return chart

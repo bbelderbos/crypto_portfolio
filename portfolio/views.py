@@ -39,17 +39,18 @@ def portfolio_page(request):
     if request.method == 'POST':
         user_set = PortfolioHoldings.objects.filter(person=user).filter(coin_name=request.POST['coin_name']).first()
         form = PortfolioForm(request.POST, instance=user_set)
+
         if form.is_valid():
             type_ = form.cleaned_data['type']
-            coin_name = form.cleaned_data['coin_name']
-            ticker = cg.single_coin_data(coin_name).symbol.upper()
+            coin_name = form.cleaned_data['coin_name'].lower()
+            ticker = form.cleaned_data['coin_ticker']
             number_of_coins = float(form.cleaned_data['number_of_coins'])
             price = cg.single_coin_data(coin_name).price
             amt_in_usd = number_of_coins * price
             if not user_coins:
                 if type_.lower() != 'sell':
-                    new_coin = PortfolioHoldings(coin_name=ticker, number_of_coins=number_of_coins,
-                                amount_in_usd=amt_in_usd, type=type_, person=user)
+                    new_coin = PortfolioHoldings(coin_ticker=ticker, number_of_coins=number_of_coins,
+                                amount_in_usd=amt_in_usd, coin_name=coin_name, type=type_, person=user)
                     new_coin.save()
                     all_coins = {c.coin_name:float(c.amount_in_usd) for c in user_coins.iterator()}
                     data = [amt for amt in all_coins.values()]
@@ -64,45 +65,46 @@ def portfolio_page(request):
                 return HttpResponseRedirect('/portfolio')
             else:
                 for coin in PortfolioHoldings.objects.filter(person=user).iterator():
-                    if coin.coin_name == ticker:
+                    if coin.coin_ticker == ticker:
                         if type_.lower() == 'sell':
                             if float(coin.number_of_coins) - number_of_coins > 0:
                                 new_coin_total = float(coin.number_of_coins) - number_of_coins
-                                user_coins.filter(coin_name=ticker).update(number_of_coins=new_coin_total)
+                                user_coins.filter(coin_ticker=ticker).update(number_of_coins=new_coin_total)
                                 new_usd_amt = new_coin_total * price
                                 if new_usd_amt >= 0:
-                                    user_coins.filter(coin_name=ticker).update(amount_in_usd=new_usd_amt)
+                                    user_coins.filter(coin_ticker=ticker).update(amount_in_usd=new_usd_amt)
                                 else:
-                                    user_coins.filter(coin_name=ticker).update(amount_in_usd=0.00)
+                                    user_coins.filter(coin_ticker=ticker).update(amount_in_usd=0.00)
                             else:
-                                deleted_name = coin.coin_name
-                                user_coins.filter(coin_name=ticker).update(amount_in_usd=0.00)
-                                user_coins.filter(coin_name=ticker).update(number_of_coins=0.00)
-                                user_coins.filter(coin_name=ticker).first().delete()
+                                deleted_name = coin.coin_ticker
+                                user_coins.filter(coin_ticker=ticker).update(amount_in_usd=0.00, number_of_coins=0.00)
+                                #user_coins.filter(coin_name=ticker).update(number_of_coins=0.00)
+                                user_coins.filter(coin_ticker=ticker).first().delete()
                         else:
                             new_coin_total = float(coin.number_of_coins) + number_of_coins
                             new_usd_amt = new_coin_total * price
-                            user_coins.filter(coin_name=ticker).update(number_of_coins=new_coin_total, amount_in_usd=new_usd_amt)
+                            user_coins.filter(coin_ticker=ticker).update(number_of_coins=new_coin_total, amount_in_usd=new_usd_amt)
                 
-                all_user_coins = [coin.coin_name for coin in PortfolioHoldings.objects.filter(person=user).iterator()]
+                all_user_coins = [coin.coin_ticker for coin in user_coins.iterator()]
                 if ticker not in all_user_coins and ticker != deleted_name and type_.lower() != 'sell':
-                    new_coin = PortfolioHoldings(coin_name=ticker, number_of_coins=number_of_coins,
-                    amount_in_usd=amt_in_usd, type=type_, person=user)
+                    new_coin = PortfolioHoldings(coin_ticker=ticker, number_of_coins=number_of_coins,
+                    amount_in_usd=amt_in_usd, coin_name=coin_name, type=type_, person=user)
                     new_coin.save()
                         
-        all_coins = {c.coin_name:float(c.amount_in_usd) for c in user_coins.iterator()}
+        all_coins = {c.coin_ticker:float(c.amount_in_usd) for c in user_coins.iterator()}
         data = [int(amt) for amt in all_coins.values()]
-        labels = [coin_name for coin_name in all_coins.keys()]
+        labels = [coin_ticker for coin_ticker in all_coins.keys()]
         pie = portfolio_pie_chart(data, labels)
         return HttpResponseRedirect('/portfolio')
 
 
     else:
-        all_coins = {c.coin_name:float(c.amount_in_usd) for c in user_coins.iterator()}
+        all_coins = {c.coin_ticker:float(c.amount_in_usd) for c in user_coins.iterator()}
         data = [int(amt) for amt in all_coins.values()]
-        labels = [coin_name for coin_name in all_coins.keys()]
+        labels = [coin_ticker for coin_ticker in all_coins.keys()]
         pie = portfolio_pie_chart(data, labels)
-        return render(request, 'portfolio.html', {'pie': pie, 'form': form})
+        display_coins = cg.portfolio_coins(user)
+        return render(request, 'portfolio.html', {'pie': pie, 'form': form, 'info': display_coins})
 
 # Comments and Explanation:
 
