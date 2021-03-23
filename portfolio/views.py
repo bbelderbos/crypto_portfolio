@@ -50,16 +50,12 @@ def portfolio_page(request):
                 pt.no_user_coins(fields.ticker, fields.num_coins, amt_in_usd, fields.coin_name, fields.type_)
                 return HttpResponseRedirect('/portfolio')
             else:
-                for coin in PortfolioHoldings.objects.filter(person=user).iterator():
-                    new_coin_total = float(coin.number_of_coins) - fields.num_coins
-                    new_usd_amt = new_coin_total * price
-                    if coin.coin_ticker == fields.ticker:
-                        deleted_name = coin.coin_ticker
-                        pt.update_or_delete(fields, coin, user_coins,
-                                            new_coin_total, new_usd_amt)
+                query = pt.find_coin(fields, user_coins, price)
+                if not query:
+                    deleted_name = ''
+                pt.save_new_coin(fields, deleted_name, user, user_coins, amt_in_usd)
+                return HttpResponseRedirect('/portfolio')
                 
-                pt.save_coin(fields, deleted_name, user, user_coins, amt_in_usd)
-            return HttpResponseRedirect('/portfolio')
     else:
         pie, display_coins = pt.package_data_and_render(user_coins)
         return render(request, 'portfolio.html', {'pie': pie, 'form': form, 'info': display_coins})

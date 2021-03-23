@@ -47,7 +47,7 @@ class Portfolio:
             user_coins.filter(coin_ticker=fields.ticker).update(number_of_coins=new_total, amount_in_usd=new_usd)
     
 
-    def save_coin(self, fields, deleted_name, user, user_coins, amt_in_usd):
+    def save_new_coin(self, fields, deleted_name, user, user_coins, amt_in_usd):
         all_user_coins = [coin.coin_ticker for coin in user_coins.iterator()]
         if fields.ticker not in all_user_coins and fields.ticker != deleted_name and fields.type_.lower() != 'sell':
             new_coin = PortfolioHoldings(coin_ticker=fields.ticker, number_of_coins=fields.num_coins,
@@ -62,3 +62,13 @@ class Portfolio:
         pie = pie_chart(data, labels)
         display_coins = cg.portfolio_coins(self.user)
         return pie, display_coins
+    
+
+    def find_coin(self, fields, user_coins, price):
+        c = user_coins.filter(coin_ticker=fields.ticker).first()
+        if c:
+            new_coin_total = float(c.number_of_coins) - fields.num_coins
+            new_usd_amt = new_coin_total * price
+            self.update_or_delete(fields, c, user_coins, new_coin_total, new_usd_amt)
+            return None
+        
