@@ -54,7 +54,6 @@ def portfolio_page(request):
             else:
                 query = pt.find_coin(fields, user_coins, price)
                 if not query:
-                    print('no query here')
                     pt.save_new_coin(fields, user, user_coins, amt_in_usd)
                 return HttpResponseRedirect('/portfolio')
                 
