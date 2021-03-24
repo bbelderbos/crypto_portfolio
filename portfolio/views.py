@@ -22,7 +22,7 @@ def homepage(request):
 @csrf_exempt
 def searchpage(request):
     if request.method == 'POST':
-        coin = cg.get_coin_by_ticker(request.POST['coin'].lower()) or request.POST['coin']
+        coin = cg.get_coin_by_ticker(request.POST['coin'].lower()) #or request.POST['coin']
         chart = chart_data(coin)
         data = cg.single_coin_data(coin)
         exchanges = cg.single_coin_exchanges(coin)
@@ -37,27 +37,26 @@ def portfolio_page(request):
     user_coins = PortfolioHoldings.objects.filter(person=user)
     pt = Portfolio(user)
 
-    if request.method == 'POST':
-        user_set = pt.create_user_set(request.POST['coin_name'])
-        form = PortfolioForm(request.POST, instance=user_set)
-
-        if form.is_valid():
-            fields = pt.get_form_data(form)
-            alt_name = cg.get_coin_by_ticker(fields.ticker)
-            if alt_name is None:
-                return HttpResponseRedirect('/')
-            price = cg.single_coin_data(alt_name).price
-            amt_in_usd = fields.num_coins * price
-            if not user_coins:
-                pt.no_user_coins(fields.ticker, fields.num_coins, amt_in_usd, fields.coin_name, fields.type_)
-                return HttpResponseRedirect('/portfolio')
-            else:
-                query = pt.find_coin(fields, user_coins, price)
-                if not query:
-                    pt.save_new_coin(fields, user, user_coins, amt_in_usd)
-                return HttpResponseRedirect('/portfolio')
-                
-    else:
+    if request.method == 'GET':
         pie, display_coins = pt.package_data_and_render(user_coins)
         return render(request, 'portfolio.html', {'pie': pie, 'form': form, 'info': display_coins})
+    
+    user_set = pt.create_user_set(request.POST['coin_name'])
+    form = PortfolioForm(request.POST, instance=user_set)
+    if form.is_valid():
+        fields = pt.get_form_data(form)
+        alt_name = cg.get_coin_by_ticker(fields.ticker)
+        if alt_name is None:
+            return HttpResponseRedirect('/')
+        price = cg.single_coin_data(alt_name).price
+        amt_in_usd = fields.num_coins * price
+
+        if not user_coins:
+            pt.no_user_coins(fields.ticker, fields.num_coins, amt_in_usd, fields.coin_name, fields.type_)
+            return HttpResponseRedirect('/portfolio')
+        else:
+            query = pt.find_coin_in_user_group(fields, user_coins, price)
+            if not query:
+                pt.save_new_coin(fields, user, user_coins, amt_in_usd)
+            return HttpResponseRedirect('/portfolio')
                         

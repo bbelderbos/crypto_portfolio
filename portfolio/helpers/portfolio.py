@@ -64,13 +64,15 @@ class Portfolio:
         return pie, display_coins
     
 
-    def find_coin(self, fields, user_coins, price):
+    def find_coin_in_user_group(self, fields, user_coins, price):
         c = user_coins.filter(coin_ticker=fields.ticker).first()
         if c:
-            if fields.type_ == 'sell':
+            if fields.type_.lower() == 'sell':
+                print('Im selling')
                 new_coin_total = float(c.number_of_coins) - fields.num_coins
             else:
                 new_coin_total = float(c.number_of_coins) + fields.num_coins
             new_usd_amt = new_coin_total * price
             self.update_or_delete(fields, c, user_coins, new_coin_total, new_usd_amt)
             return True
+        return False
