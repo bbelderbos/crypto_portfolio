@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from PIL import Image 
 import matplotlib.ticker as mtick
 
-
 cg = CoinGeckoAPI()
 
 plt.rcParams['axes.facecolor'] = 'black'
@@ -23,7 +22,6 @@ def convert_unix_to_date(timestamp):
 
 
 def chart_data(coin, currency='usd', days=1):
-    cg = CoinGeckoAPI()
     chart = cg.get_coin_market_chart_by_id(coin, currency, days).get('prices')
     imgdata = StringIO()
     prices = {}
