@@ -18,7 +18,7 @@ class CoinData:
     def get_coin_by_ticker(self, coin_ticker):
         names = {coin['symbol']: coin['id'] 
                 for coin in self.info.get_coins_list()}
-        return names.get(coin_ticker.lower())
+        return names.get(coin_ticker.lower(), coin_ticker)
     
 
     def get_all_coin_data(self, logos):

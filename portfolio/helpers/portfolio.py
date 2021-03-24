@@ -6,6 +6,7 @@ from portfolio.helpers.coin_data import CoinData
 
 
 FormData = namedtuple('FormData', 'ticker num_coins coin_name type_')
+SELL = 'sell'
 cg = CoinData()
 
 class Portfolio:
@@ -18,7 +19,7 @@ class Portfolio:
     
 
     def no_user_coins(self, ticker, num_coins, usd_amt, coin_name, type_):
-        if type_.lower() != 'sell':
+        if type_.lower() != SELL:
             new_coin = PortfolioHoldings(coin_ticker=ticker, number_of_coins=num_coins,
                         amount_in_usd=usd_amt, coin_name=coin_name, type=type_, person=self.user)
             new_coin.save()
@@ -37,7 +38,7 @@ class Portfolio:
     
 
     def update_or_delete(self, fields, coin, user_coins, new_total, new_usd):
-        if fields.type_.lower() == 'sell':
+        if fields.type_.lower() == SELL:
             if float(coin.number_of_coins) - fields.num_coins > 0:
                 user_coins.filter(coin_ticker=fields.ticker).update(number_of_coins=new_total,
                                                                 amount_in_usd=new_usd)
@@ -48,15 +49,15 @@ class Portfolio:
     
 
     def save_new_coin(self, fields, user, user_coins, amt_in_usd):
-        all_user_coins = [coin.coin_ticker for coin in user_coins.iterator()]
-        if fields.ticker not in all_user_coins and fields.type_.lower() != 'sell':
+        all_user_coins = [coin.coin_ticker for coin in user_coins]
+        if fields.ticker not in all_user_coins and fields.type_.lower() != SELL:
             new_coin = PortfolioHoldings(coin_ticker=fields.ticker, number_of_coins=fields.num_coins,
             amount_in_usd=amt_in_usd, coin_name=fields.coin_name, type=fields.type_, person=user)
             new_coin.save()
     
 
     def package_data_and_render(self, user_coins):
-        all_coins = {c.coin_ticker:float(c.amount_in_usd) for c in user_coins.iterator()}
+        all_coins = {c.coin_ticker:float(c.amount_in_usd) for c in user_coins}
         data = [int(amt) for amt in all_coins.values()]
         labels = [coin_ticker for coin_ticker in all_coins.keys()]
         pie = pie_chart(data, labels)
@@ -64,13 +65,14 @@ class Portfolio:
         return pie, display_coins
     
 
-    def find_coin(self, fields, user_coins, price):
+    def find_coin_in_user_group(self, fields, user_coins, price):
         c = user_coins.filter(coin_ticker=fields.ticker).first()
         if c:
-            if fields.type_ == 'sell':
+            if fields.type_.lower() == SELL:
                 new_coin_total = float(c.number_of_coins) - fields.num_coins
             else:
                 new_coin_total = float(c.number_of_coins) + fields.num_coins
             new_usd_amt = new_coin_total * price
             self.update_or_delete(fields, c, user_coins, new_coin_total, new_usd_amt)
             return True
+        return False
