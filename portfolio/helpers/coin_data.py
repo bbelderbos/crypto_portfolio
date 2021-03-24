@@ -7,11 +7,18 @@ from pycoingecko import CoinGeckoAPI
 TOP_COINS = 25
 TOP_EXCHANGES = 5
 Coin = namedtuple('Coin', 'rank logo name price market_cap volume change percent_change')
+CoinSet = namedtuple('CoinSet', 'ticker amount usd image')
 
 
 class CoinData:
     def __init__(self) -> None:
         self.info = CoinGeckoAPI()
+    
+
+    def get_coin_by_ticker(self, coin_ticker):
+        names = {coin['symbol']: coin['id'] 
+                for coin in self.info.get_coins_list()}
+        return names.get(coin_ticker.lower())
     
 
     def get_all_coin_data(self, logos):
@@ -56,11 +63,11 @@ class CoinData:
 
     def portfolio_coins(self, user):
         coin_list = []
-        userCoins = namedtuple('userCoins', 'ticker amount usd image')
         user_coins = PortfolioHoldings.objects.filter(person=user)
         for coin in user_coins.iterator():
-            image = self.single_coin_data(coin.coin_name).image
-            coin = userCoins(ticker=coin.coin_ticker, amount=coin.number_of_coins, 
+            name = self.get_coin_by_ticker(coin.coin_ticker)
+            image = self.single_coin_data(name).image
+            coin = CoinSet(ticker=coin.coin_ticker, amount=coin.number_of_coins, 
                    usd=coin.amount_in_usd, image=image)
             coin_list.append(coin)
         return coin_list

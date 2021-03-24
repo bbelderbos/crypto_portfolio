@@ -22,7 +22,7 @@ def homepage(request):
 @csrf_exempt
 def searchpage(request):
     if request.method == 'POST':
-        coin = request.POST['coin'].lower()
+        coin = cg.get_coin_by_ticker(request.POST['coin'].lower()) or request.POST['coin']
         chart = chart_data(coin)
         data = cg.single_coin_data(coin)
         exchanges = cg.single_coin_exchanges(coin)
@@ -32,7 +32,6 @@ def searchpage(request):
 
 @login_required
 def portfolio_page(request):
-    deleted_name = ""
     form = PortfolioForm()
     user = request.user
     user_coins = PortfolioHoldings.objects.filter(person=user)
@@ -44,7 +43,10 @@ def portfolio_page(request):
 
         if form.is_valid():
             fields = pt.get_form_data(form)
-            price = cg.single_coin_data(fields.coin_name).price
+            alt_name = cg.get_coin_by_ticker(fields.ticker)
+            if alt_name is None:
+                return HttpResponseRedirect('/')
+            price = cg.single_coin_data(alt_name).price
             amt_in_usd = fields.num_coins * price
             if not user_coins:
                 pt.no_user_coins(fields.ticker, fields.num_coins, amt_in_usd, fields.coin_name, fields.type_)
@@ -52,8 +54,8 @@ def portfolio_page(request):
             else:
                 query = pt.find_coin(fields, user_coins, price)
                 if not query:
-                    deleted_name = ''
-                pt.save_new_coin(fields, deleted_name, user, user_coins, amt_in_usd)
+                    print('no query here')
+                    pt.save_new_coin(fields, user, user_coins, amt_in_usd)
                 return HttpResponseRedirect('/portfolio')
                 
     else:
