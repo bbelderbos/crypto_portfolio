@@ -90,3 +90,34 @@ def test_update_or_delete_coin(ticker, coin_amt, usd_amt, coin_name, type_):
         assert float(coin.number_of_coins) == 36000.326
     else:
         assert coin is None
+
+
+@pytest.mark.parametrize('amt_in_usd, fields', [
+    (150000.37,
+    Fields(ticker='ETH', num_coins=200, usd_amt=15000, coin_name='ethereum',
+    type_='Sell')),
+    (35000,
+    Fields(ticker='NEO', num_coins=200, usd_amt=15000, coin_name='neo',
+    type_='Buy'))
+])
+
+
+@pytest.mark.django_db(transaction=True)
+def test_save_new_coin(amt_in_usd, fields):
+    user, pt = create_user_and_class_instance()
+    if fields.ticker == 'ETH':
+        PortfolioHoldings.objects.create(coin_ticker='ETH', number_of_coins=200,
+                            amount_in_usd=15000, coin_name='ethereum', type='Sell',
+                            person=user)
+    else:
+        PortfolioHoldings.objects.create(coin_ticker='AAVE', number_of_coins=200,
+                            amount_in_usd=15000, coin_name='aave', type='Buy',
+                            person=user)
+
+    user_coins = PortfolioHoldings.objects.filter(person=user)
+    pt.save_new_coin(fields, user, user_coins, amt_in_usd)
+    coin = PortfolioHoldings.objects.filter(person=user, coin_ticker=fields.ticker).first()
+    if fields.ticker == 'ETH':
+        assert float(coin.amount_in_usd) == 15000
+    else:
+        assert float(coin.amount_in_usd) == 35000.00
