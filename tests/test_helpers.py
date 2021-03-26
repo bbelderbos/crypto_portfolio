@@ -1,6 +1,7 @@
 from crypto import __version__
 from unittest.mock import Mock, patch
 from typing import List, Sequence, Any
+from decimal import Decimal
 
 import pytest
 from django.contrib.auth.models import User
@@ -9,6 +10,7 @@ from portfolio.helpers.coin_data import CoinData
 from portfolio.helpers.chart import convert_unix_to_date, chart_data, portfolio_pie_chart
 from portfolio.helpers.scrape_logos import scrape_coin_logos
 from portfolio.models import PortfolioHoldings
+from portfolio.templatetags.tags import format_money, format_coin_amt
 
 cg = CoinData()
 
@@ -102,3 +104,30 @@ def test_coin_logos():
     result = scrape_coin_logos()
     assert len(result) == 25
     assert 'assets' in result[0]
+
+
+@pytest.mark.parametrize('number, expected', [
+    (350000.45, '$350,000.45'),
+    (2300.42, '$2,300.42'),
+    (10007.42, '$10,007.42'),
+    ('dog', 'dog')
+])
+
+
+def test_format_money(number, expected):
+    result = format_money(number)
+    assert result == expected
+
+
+@pytest.mark.parametrize('number, expected', [
+    (Decimal('350000.450720000'), '350000.45072'),
+    (Decimal('45.00001003000'), '45.00001003'),
+    (Decimal('320.096500200000'), '320.0965002'),
+    (Decimal('0.00'), '0'),
+    (Decimal('500.000000000000000000'), '500')
+])
+
+
+def test_format_coin_amt(number, expected):
+    result = format_coin_amt(number)
+    assert result == expected
