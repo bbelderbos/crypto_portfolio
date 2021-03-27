@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
@@ -46,9 +46,12 @@ def portfolio_page(request):
     if form.is_valid():
         fields = pt.get_form_data(form)
         alt_name = cg.get_coin_by_ticker(fields.ticker)
-        if alt_name is None:
-            return HttpResponseRedirect('/')
-        price = cg.single_coin_data(alt_name).price
+        if alt_name not in cg.all_supported_coins:
+            return HttpResponseRedirect('/404')
+        try:
+            price = cg.single_coin_data(alt_name).price
+        except AttributeError:
+            return HttpResponseRedirect('/404')
         amt_in_usd = fields.num_coins * price
 
         if not user_coins:
@@ -59,4 +62,7 @@ def portfolio_page(request):
             if not query:
                 pt.save_new_coin(fields, user, user_coins, amt_in_usd)
             return HttpResponseRedirect('/portfolio')
-                        
+
+
+def error_page(request):
+    return render(request, '404.html')

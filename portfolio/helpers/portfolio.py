@@ -27,7 +27,7 @@ class Portfolio:
     
     def get_form_data(self, form):
         return FormData(ticker=form.cleaned_data['coin_ticker'],
-                        num_coins=float(form.cleaned_data['number_of_coins']),
+                        num_coins=abs(float(form.cleaned_data['number_of_coins'])),
                         coin_name=form.cleaned_data['coin_name'],
                         type_=form.cleaned_data['type'])
     

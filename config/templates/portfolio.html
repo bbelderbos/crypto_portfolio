@@ -18,7 +18,7 @@
             <div class="col-xl-3">
                 <!-- <span><img src="{{coin.image}}" alt="coin logo"></span> -->
                 <p><img src="{{coin.image}}" alt="coin logo"><strong>&nbsp;{{coin.ticker}}</strong></p>
-                <p>Amount: &nbsp; {{coin.amount}}</p>
+                <p>Amount: &nbsp; {{coin.amount|format_coin_amt}}</p>
                 <p>Value: &nbsp; {{coin.usd|format_money}}</p>
             </div>
             {% endfor %}

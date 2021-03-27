@@ -13,13 +13,14 @@ CoinSet = namedtuple('CoinSet', 'ticker amount usd image')
 class CoinData:
     def __init__(self) -> None:
         self.info = CoinGeckoAPI()
-    
+        self.all_supported_coins = {c['id'] for c
+                                in self.info.get_coins_list()}
 
     def get_coin_by_ticker(self, coin_ticker):
         names = {coin['symbol']: coin['id'] 
                 for coin in self.info.get_coins_list()}
         return names.get(coin_ticker.lower(), coin_ticker)
-    
+        
 
     def get_all_coin_data(self, logos):
         top_coins = []
@@ -32,21 +33,24 @@ class CoinData:
 
 
     def single_coin_data(self, coin):
-        SingleCoin = namedtuple('SingleCoin', 'id symbol link1 link2 image market_cap_rank ath price mcap volume')
-        data = self.info.get_coin_by_id(coin.lower())
-        id = data['id'].title()
-        symbol = data['symbol'].upper()
-        link1 = data['links']['homepage'][0]
-        link2 = data['links']['blockchain_site'][0]
-        image = data['image']['small']
-        market_cap_rank = data['market_cap_rank']
-        price_data = self.info.get_coins_markets('usd')[market_cap_rank-1]
-        ath = '$' + str(data['market_data']['ath']['usd'])
-        price = price_data['current_price']
-        mcap = price_data['market_cap']
-        volume = price_data['total_volume']
-        return SingleCoin(id=id, symbol=symbol, link1=link1, link2=link2, image=image,
-                        market_cap_rank=market_cap_rank, ath=ath, price=price, mcap=mcap, volume=volume)
+        try:
+            SingleCoin = namedtuple('SingleCoin', 'id symbol link1 link2 image market_cap_rank ath price mcap volume')
+            data = self.info.get_coin_by_id(coin.lower())
+            id = data['id'].title()
+            symbol = data['symbol'].upper()
+            link1 = data['links']['homepage'][0]
+            link2 = data['links']['blockchain_site'][0]
+            image = data['image']['small']
+            market_cap_rank = data['market_cap_rank']
+            price_data = self.info.get_coins_markets('usd')[market_cap_rank-1]
+            ath = '$' + str(data['market_data']['ath']['usd'])
+            price = price_data['current_price']
+            mcap = price_data['market_cap']
+            volume = price_data['total_volume']
+            return SingleCoin(id=id, symbol=symbol, link1=link1, link2=link2, image=image,
+                            market_cap_rank=market_cap_rank, ath=ath, price=price, mcap=mcap, volume=volume)
+        except TypeError:
+            pass
 
 
     def single_coin_exchanges(self, coin):
