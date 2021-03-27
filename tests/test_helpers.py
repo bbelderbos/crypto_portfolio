@@ -34,7 +34,7 @@ def test_chart_data():
     coins = ['bitcoin', 'ethereum']
     for coin in coins:
         result = chart_data(coin)
-        assert True
+        assert result is not None
         assert 'Price in USD' in result
 
 
@@ -46,7 +46,7 @@ def test_chart_data():
 
 def test_pie_chart(data, labels):
     result = portfolio_pie_chart(data, labels)
-    assert True
+    assert result is not None
     assert 'Coin Names' in result
 
 

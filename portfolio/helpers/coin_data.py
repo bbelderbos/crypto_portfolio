@@ -8,6 +8,7 @@ TOP_COINS = 25
 TOP_EXCHANGES = 5
 Coin = namedtuple('Coin', 'rank logo name price market_cap volume change percent_change')
 CoinSet = namedtuple('CoinSet', 'ticker amount usd image')
+SingleCoin = namedtuple('SingleCoin', 'id symbol link1 link2 image market_cap_rank ath price mcap volume')
 
 
 class CoinData:
@@ -34,7 +35,6 @@ class CoinData:
 
     def single_coin_data(self, coin):
         try:
-            SingleCoin = namedtuple('SingleCoin', 'id symbol link1 link2 image market_cap_rank ath price mcap volume')
             data = self.info.get_coin_by_id(coin.lower())
             id = data['id'].title()
             symbol = data['symbol'].upper()
