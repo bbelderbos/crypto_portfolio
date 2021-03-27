@@ -15,3 +15,7 @@ class PortfolioForm(forms.ModelForm):
             'type': forms.Select(choices=TYPE_CHOICES, attrs={'placeholder': 'Buy or Sell'})
         }
         fields = ['coin_ticker', 'number_of_coins', 'coin_name', 'type']
+
+
+class ErrorRedirect(forms.Form):
+    button = forms.CharField()

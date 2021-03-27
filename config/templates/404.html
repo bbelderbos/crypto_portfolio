@@ -1,11 +1,19 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <h1 class="display-4 text-center">Sorry, the coin you requested could not be found.</h1>
-                <p class="lead text-center">Please navigate back to the portfolio page and try again.</p>
+                <p class="lead text-center">If you are logged in, You will be redirected 
+                    back to the portfolio page to try again. Otherwise, you will be redirected to the sign in page.</p>
+                <form action="{% url 'portfolio' %}" method="GET">
+                    {% csrf_token %}
+                    <input type="hidden" name="{{ 'next' }}" value="{% url 'portfolio' %}"/>
+                    <button class="btn btn-block btn-primary" type="submit">{% trans 'Click Here if Not Redirected' %}</button>
+                </form>
             </div>
         </div>
     </div>
+    <meta http-equiv="refresh" content="3; url={% url 'portfolio' %}">
 {% endblock %}

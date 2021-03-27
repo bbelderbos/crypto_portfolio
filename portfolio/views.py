@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from matplotlib.pyplot import thetagrids
 from .models import PortfolioHoldings
-from .forms import PortfolioForm
+from .forms import PortfolioForm, ErrorRedirect
 
 from portfolio.helpers.chart import chart_data, portfolio_pie_chart
 from portfolio.helpers.scrape_logos import scrape_coin_logos
@@ -22,11 +22,14 @@ def homepage(request):
 @csrf_exempt
 def searchpage(request):
     if request.method == 'POST':
-        coin = cg.get_coin_by_ticker(request.POST['coin'].lower()) #or request.POST['coin']
-        chart = chart_data(coin)
-        data = cg.single_coin_data(coin)
-        exchanges = cg.single_coin_exchanges(coin)
-        return render(request, 'search.html', {'chart': chart, 'data': data, 'exchanges': exchanges})
+        try:
+            coin = cg.get_coin_by_ticker(request.POST['coin'].lower())
+            chart = chart_data(coin)
+            data = cg.single_coin_data(coin)
+            exchanges = cg.single_coin_exchanges(coin)
+            return render(request, 'search.html', {'chart': chart, 'data': data, 'exchanges': exchanges})
+        except Exception:
+            return HttpResponseRedirect('/404')
     return render(request, 'search.html')
 
 
@@ -65,4 +68,5 @@ def portfolio_page(request):
 
 
 def error_page(request):
-    return render(request, '404.html')
+    button = ErrorRedirect()
+    return render(request, '404.html', {'button': button})
