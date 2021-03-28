@@ -18,10 +18,15 @@ plt.rcParams['ytick.color'] = 'white'
 plt.rcParams['axes.labelcolor'] = 'white'
 
 def convert_unix_to_date(timestamp):
+    """Converts the timestamp returned from the
+    CoinGecko API into a readable date."""
     return str(datetime.fromtimestamp(timestamp))
 
 
 def chart_data(coin, currency='usd', days=1):
+    """Creates a linear chart of price data within the last 24
+    for a coin that a user searches for. Returns the chart image, 
+    and closes the plot before returning the image."""
     chart = cg.get_coin_market_chart_by_id(coin, currency, days).get('prices')
     imgdata = StringIO()
     prices = {}
@@ -47,6 +52,9 @@ def chart_data(coin, currency='usd', days=1):
 
 
 def portfolio_pie_chart(data, labels):
+    """Creates a pie chart of the coins in a user's
+    portfolio. The pie wedges represent the percentage
+    of a user's portfolio that a coin represents."""
     pie_chart = StringIO()
     plt.figure(figsize=(6,4))
     plt.pie(data, labels=labels, autopct='%.2f', shadow=True)

@@ -48,12 +48,10 @@ def portfolio_page(request):
     form = PortfolioForm(request.POST, instance=user_set)
     if form.is_valid():
         fields = pt.get_form_data(form)
-        alt_name = cg.get_coin_by_ticker(fields.ticker)
-        if alt_name not in cg.all_supported_coins:
-            return HttpResponseRedirect('/404')
         try:
+            alt_name = cg.get_coin_by_ticker(fields.ticker)
             price = cg.single_coin_data(alt_name).price
-        except AttributeError:
+        except (AttributeError, ValueError, TypeError) as e:
             return HttpResponseRedirect('/404')
         amt_in_usd = fields.num_coins * price
 

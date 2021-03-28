@@ -12,18 +12,27 @@ SingleCoin = namedtuple('SingleCoin', 'id symbol link1 link2 image market_cap_ra
 
 
 class CoinData:
+    """Gathers all relevant data from the CoinGecko
+    API, and returns it to the app pages."""
     def __init__(self) -> None:
         self.info = CoinGeckoAPI()
         self.all_supported_coins = {c['id'] for c
                                 in self.info.get_coins_list()}
 
+
     def get_coin_by_ticker(self, coin_ticker):
+        """A lookup that is used in case the user passes a
+        coin's ticker into the form. Coins are only accessible
+        via the API by their id, but users may pass in a ticker
+        instead. This method handles that situation."""
         names = {coin['symbol']: coin['id'] 
                 for coin in self.info.get_coins_list()}
         return names.get(coin_ticker.lower(), coin_ticker)
         
 
     def get_all_coin_data(self, logos):
+        """This method returns the relevant data for all coins
+        in the top 25 coins ranked by market cap."""
         top_coins = []
         for idx, item in enumerate(self.info.get_coins_markets('usd')[:TOP_COINS], start=1):
             coin = Coin(rank=idx, logo=logos[idx-1], name=item['id'].title(), price=item['current_price'],
@@ -34,6 +43,8 @@ class CoinData:
 
 
     def single_coin_data(self, coin):
+        """This method gathers all the relevant data for a single
+        coin that the user may search for."""
         try:
             data = self.info.get_coin_by_id(coin.lower())
             id = data['id'].title()
@@ -54,6 +65,8 @@ class CoinData:
 
 
     def single_coin_exchanges(self, coin):
+        """Gathers all relevant exchange data for a
+        single coin."""
         exchange_info = []
         Exchanges = namedtuple('Exchanges', 'name volume')
         data = self.info.get_coin_by_id(coin.lower())['tickers']
@@ -66,6 +79,8 @@ class CoinData:
 
 
     def portfolio_coins(self, user):
+        """Gets all of the data for a user's coins
+        to display on the portfolio page."""
         coin_list = []
         user_coins = PortfolioHoldings.objects.filter(person=user)
         for coin in user_coins.iterator():
