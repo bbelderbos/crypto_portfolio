@@ -11,6 +11,7 @@ from portfolio.helpers.chart import convert_unix_to_date, chart_data, portfolio_
 from portfolio.helpers.scrape_logos import scrape_coin_logos
 from portfolio.helpers.portfolio import Portfolio
 from portfolio.models import PortfolioHoldings
+from .conftest import setup_user, coins
 
 Fields = namedtuple('Fields', 'ticker num_coins usd_amt coin_name type_')
 cg = CoinData()
@@ -27,16 +28,25 @@ def create_user_and_class_instance():
     return user, pt, query
 
 
-@pytest.mark.parametrize('ticker, num_coins, usd_amt, coin_name, type_', [
-    ('ICX', 26000.326, 52000.35, 'icon', 'Buy'),
-    ('DOT', 300, 9000, 'DOT', 'Sell')
-])
-@pytest.mark.django_db(transaction=True)
-def test_no_user_coins(ticker, num_coins, usd_amt, coin_name, type_):
+# @pytest.mark.parametrize('ticker, num_coins, usd_amt, coin_name, type_', [
+#     ('ICX', 26000.326, 52000.35, 'icon', 'Buy'),
+#     ('DOT', 300, 9000, 'DOT', 'Sell')
+# ])
+# @pytest.mark.django_db(transaction=True)
+# def test_no_user_coins(ticker, num_coins, usd_amt, coin_name, type_):
+#     user, pt, query = create_user_and_class_instance()
+#     pt.no_user_coins(ticker, num_coins, usd_amt, coin_name, type_)
+#     query = query.filter(coin_ticker=ticker).first()
+#     assert query is None or query.coin_ticker == 'ICX'
+
+
+@pytest.mark.django_db(transaction=True) #if I erase this function and use all of the commented out stuff above, all tests pass.
+def test_no_user_coins(coins):
     user, pt, query = create_user_and_class_instance()
-    pt.no_user_coins(ticker, num_coins, usd_amt, coin_name, type_)
-    query = query.filter(coin_ticker=ticker).first()
-    assert query is None or query.coin_ticker == 'ICX'
+    for coin in coins:
+        pt.no_user_coins(coin.ticker, coin.num_coins, coin.usd_amt, coin.coin_name, coin.type_)
+        query = query.filter(coin_ticker=coin.ticker).first()
+        assert query is None or query.coin_ticker == 'ICX'
 
 
 @pytest.mark.parametrize('ticker, num_coins, usd_amt, coin_name, type_', [
