@@ -6,7 +6,6 @@ authors = ["Jesse Brink <jbrink0925@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-Django = "^3.1.0"
 bs4 = "^0.0.1"
 requests = "^2.25.1"
 dj-database-url = "^0.5.0"
