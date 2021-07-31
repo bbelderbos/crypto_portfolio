@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image 
 import matplotlib.ticker as mtick
+plt.switch_backend('Agg')
 
 cg = CoinGeckoAPI()
 
