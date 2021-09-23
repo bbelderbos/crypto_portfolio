@@ -16,9 +16,6 @@ class CoinData:
     API, and returns it to the app pages."""
     def __init__(self) -> None:
         self.info = CoinGeckoAPI()
-        # self.all_supported_coins = {c['id'] for c
-        #                        in self.info.get_coins_list()}
-
 
     def get_coin_by_ticker(self, coin_ticker):
         """A lookup that is used in case the user passes a
