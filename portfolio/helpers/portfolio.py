@@ -11,18 +11,18 @@ cg = CoinData()
 
 class Portfolio:
     """Class created to handle all of the portfolio page operations.
-    Determines whether to save a new coin, or update or delete an 
+    Determines whether to save a new coin, or update or delete an
     existing entry."""
     def __init__(self, user) -> None:
         self.user = user
-    
+
 
     def create_user_set(self, coin):
         """creates a user instance for the form on the portfolio page
         so that only the user's specific coins will be accessed, and not
         other user's coins by the same name."""
         return PortfolioHoldings.objects.filter(person=self.user).filter(coin_name=coin).first()
-    
+
 
     def no_user_coins(self, ticker, num_coins, usd_amt, coin_name, type_):
         """Saves a new user's coins to the db."""
@@ -31,21 +31,21 @@ class Portfolio:
                         amount_in_usd=usd_amt, coin_name=coin_name, type=type_, person=self.user)
             new_coin.save()
 
-    
+
     def get_form_data(self, form):
         """"Collects all form data passed in for easy access."""
         return FormData(ticker=form.cleaned_data['coin_ticker'],
                         num_coins=abs(float(form.cleaned_data['number_of_coins'])),
                         coin_name=form.cleaned_data['coin_name'],
                         type_=form.cleaned_data['type'])
-    
+
 
     def delete_coin(self, user_coins, fields):
         """Delete's a user's coin from the db if they have sold all of
         that particular coin."""
         user_coins.filter(coin_ticker=fields.ticker).update(amount_in_usd=0.00, number_of_coins=0.00)
         user_coins.filter(coin_ticker=fields.ticker).first().delete()
-    
+
 
     def update_or_delete(self, fields, coin, user_coins, new_total, new_usd):
         """Determines whether to update or delete a user's coin, based on
@@ -58,7 +58,7 @@ class Portfolio:
                 self.delete_coin(user_coins, fields)
         else:
             user_coins.filter(coin_ticker=fields.ticker).update(number_of_coins=new_total, amount_in_usd=new_usd)
-    
+
 
     def save_new_coin(self, fields, user, user_coins, amt_in_usd):
         """Determines whether or not a user is adding a new coin
@@ -68,7 +68,7 @@ class Portfolio:
             new_coin = PortfolioHoldings(coin_ticker=fields.ticker, number_of_coins=fields.num_coins,
             amount_in_usd=amt_in_usd, coin_name=fields.coin_name, type=fields.type_, person=user)
             new_coin.save()
-    
+
 
     def package_data_and_render(self, user_coins):
         """Collects all display data for the portfolio page
@@ -79,7 +79,7 @@ class Portfolio:
         pie = pie_chart(data, labels)
         display_coins = cg.portfolio_coins(self.user)
         return pie, display_coins
-    
+
 
     def find_coin_in_user_group(self, fields, user_coins, price):
         """Determines whether or not a user already has the coin

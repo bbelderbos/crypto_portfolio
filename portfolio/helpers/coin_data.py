@@ -16,8 +16,8 @@ class CoinData:
     API, and returns it to the app pages."""
     def __init__(self) -> None:
         self.info = CoinGeckoAPI()
-        self.all_supported_coins = {c['id'] for c
-                                in self.info.get_coins_list()}
+        # self.all_supported_coins = {c['id'] for c
+        #                        in self.info.get_coins_list()}
 
 
     def get_coin_by_ticker(self, coin_ticker):
@@ -25,10 +25,10 @@ class CoinData:
         coin's ticker into the form. Coins are only accessible
         via the API by their id, but users may pass in a ticker
         instead. This method handles that situation."""
-        names = {coin['symbol']: coin['id'] 
+        names = {coin['symbol']: coin['id']
                 for coin in self.info.get_coins_list()}
         return names.get(coin_ticker.lower(), coin_ticker)
-        
+
 
     def get_all_coin_data(self, logos):
         """This method returns the relevant data for all coins
@@ -86,7 +86,7 @@ class CoinData:
         for coin in user_coins.iterator():
             name = self.get_coin_by_ticker(coin.coin_ticker)
             image = self.single_coin_data(name).image
-            coin = CoinSet(ticker=coin.coin_ticker, amount=coin.number_of_coins, 
+            coin = CoinSet(ticker=coin.coin_ticker, amount=coin.number_of_coins,
                    usd=coin.amount_in_usd, image=image)
             coin_list.append(coin)
         return coin_list

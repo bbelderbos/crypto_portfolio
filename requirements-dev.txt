@@ -1,0 +1,7 @@
+pytest
+pytest-vcr
+pytest-mypy
+pytest-cov
+pytest-django
+mypy
+flake8
