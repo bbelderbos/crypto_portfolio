@@ -1,1 +1,0 @@
-This project is a crypto app that is designed to serve as a cryptocurrency portfolio tracker, but also to be a place where you can find trading information about your favorite crypto coins and projects. Please consult either the requirements.txt file or the pyproject.toml file for a list of dependencies. 
