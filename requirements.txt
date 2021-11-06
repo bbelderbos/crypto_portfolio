@@ -16,3 +16,4 @@ whitenoise==5.2.0
 lxml
 pycoingecko==1.4.0
 matplotlib
+pandas==1.2.4
